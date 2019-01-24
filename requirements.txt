@@ -1,0 +1,9 @@
+Django==2.1.5
+django-grip==2.0.0
+Werkzeug==0.12.2
+six==1.10.0
+django-dotenv==1.4.1
+channels==2.1.2; python_version >= '3.5'
+django-eventstream==2.4.0
+sseclient-py==1.7
+djangorestframework==3.9.1
