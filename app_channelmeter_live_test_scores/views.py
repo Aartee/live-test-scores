@@ -20,10 +20,11 @@ def _inmemory_live_test_scores_worker():
 		global_exams[data["exam"]].append([data["studentId"], data["score"]])
 		send_event('test', 'score', data)
 
-def students(request):
-	studentList = {}
-	studentList["studentList"] = [student for student, value in global_live_test_scores.items() if len(value) >= 1]
-	return JsonResponse(studentList)
+def students():
+    while True:
+        studentList = {}
+        studentList["studentList"] = [student for student, value in global_live_test_scores.items() if len(value) >= 1]
+        send_event("students_channel", 'students', studentList)
 
 def studentTestScores(request, id):
 	test_scores = {}
@@ -31,10 +32,12 @@ def studentTestScores(request, id):
 	test_scores["average_score"] = sum(test[1] for test in global_live_test_scores[id]) / len(global_live_test_scores[id])
 	return JsonResponse(test_scores)
 
-def exams(request):
-	exams = {}
-	exams["exams"] = list(global_exams.keys())
-	return JsonResponse(exams)
+def exams():
+	while True:
+		exams = {}
+		exams["exams"] = list(global_exams.keys())
+		send_event("exams", 'exams', exams)
+		# return JsonResponse(exams)
 
 def examScores(request, number):
 	exam_scores = {}
@@ -49,3 +52,11 @@ global_exams = collections.defaultdict(list)
 inmemory_live_test_scores_thread = threading.Thread(target = _inmemory_live_test_scores_worker)
 inmemory_live_test_scores_thread.daemon = True
 inmemory_live_test_scores_thread.start()
+
+students_thread = threading.Thread(target = students)
+students_thread.daemon = True
+students_thread.start()
+
+exams_thread = threading.Thread(target = exams)
+exams_thread.daemon = True
+exams_thread.start()

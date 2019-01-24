@@ -8,5 +8,14 @@ urlpatterns = [
     url(r'^events/', AuthMiddlewareStack(
         URLRouter(django_eventstream.routing.urlpatterns)
     ), {'channels': ['test']}),
+
+    url(r'^students/', AuthMiddlewareStack(
+        URLRouter(django_eventstream.routing.urlpatterns)
+    ), {'channels': ['students_channel']}),
+
+    url(r'^exams/', AuthMiddlewareStack(
+        URLRouter(django_eventstream.routing.urlpatterns)
+    ), {'channels': ['exams']}),
+
     url(r'', AsgiHandler),
 ]
